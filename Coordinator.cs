@@ -29,28 +29,44 @@ namespace AirLine
           Console.WriteLine("2. Make a Booking");
           Console.WriteLine("3. Delete a Booking");
           Console.WriteLine("4. Exit");
-          string choice = Console.ReadLine();
-          switch(choice)
+          Console.Write("Enter your choice: ");
+
+          try
           {
-            case "1":
-              ViewBookings();
-              break;
-            case "2":
-              AddBooking();
-              break;
-            case "3":
-              DeleteBooking();
-              break;
-            case "4":
-              exit = true;
-              break;
-            default:
-              Console.WriteLine("Invalid choice");
-              break;
+            string? choice = Console.ReadLine(); //declared as nullable 
+            if (string.IsNullOrWhiteSpace(choice) || !int.TryParse(choice, out int parsedChoice))
+            {
+              Console.WriteLine("Invalid choice, please enter a number.");
+              continue;
+            }
+
+            switch (parsedChoice)
+            {
+              case 1:
+                ViewBookings();
+                break;
+              case 2:
+                AddBooking();
+                break;
+              case 3:
+                DeleteBooking();
+                break;
+              case 4:
+                exit = true;
+                break;
+              default:
+                Console.WriteLine("Invalid choice, please try again.");
+                break;
+            
+            }
           }
+          catch (Exception ex)
+          {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+          }
+
         }
       }
-
 
       private void AddBooking()
       {
@@ -84,7 +100,6 @@ namespace AirLine
   
         Console.WriteLine("Booking for Customer with Customer ID " + customerId + " successful.");      
       }
-
 
       private void ViewBookings()
       {
