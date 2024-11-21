@@ -1,64 +1,62 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace _2129_prj
+internal class CustomerManager
 {
-    internal class CustomerManager
+    private Customer[] customers;
+    private int numCustomers;
+    private int max;
+    private static int seed;
+
+
+    public CustomerManager(int max, int startseed)
     {
-        private List<Customer> customers;
+        this.max = max;
+        numCustomers = 0;
+        customers = new Customer[max];
+        seed = startseed;
+    }
 
-        public CustomerManager()
+    public bool addCustomer(string firstName, string lastName, string phone)
+    {
+        if (numCustomers < max)
         {
-            customers = new List<Customer>();
-        }
-
-        public void AddCustomer(Customer customer)
-        {
-            if (!customer.IsValidCustomer())
-            {
-                Console.WriteLine("Invalid customer details. Customer not added.");
-                return;
-            }
-
-            customers.Add(customer);
-            Console.WriteLine("Customer added successfully.");
-        }
-        public void ViewCustomers()
-        {
-            if (customers.Count == 0)
-            {
-                Console.WriteLine("No customers found.");
-                return;
-            }
-
-            Console.WriteLine("\nList of Customers:");
-            foreach (var customer in customers)
-            {
-                Console.WriteLine(customer.ToString());
-            }
-        }
-
-        public bool DeleteCustomer(int customerID)
-        {
-            var customer = customers.Find(c => c.CustomerID == customerID);
-            if (customer == null)
-            {
-                Console.WriteLine("Customer not found.");
-                return false;
-            }
-
-            if (customer.NumberOfBookings > 0)
-            {
-                Console.WriteLine("Cannot delete customer. They have active bookings.");
-                return false;
-            }
-
-            customers.Remove(customer);
-            Console.WriteLine("Customer deleted successfully.");
+            customers[numCustomers++] = new Customer(seed, firstName, lastName, phone);
+            seed++;
+            numCustomers++;
             return true;
         }
+        return false;
+    }
+
+    public Customer searchCustByID(int id)
+    {
+        for (int i = 0; i < numCustomers; i++)
+        {
+            if (customers[i].getCustomerID() == id)
+            {
+                return customers[i];
+            }
+        }
+        return null;
+    }
+    public bool deleteCustomer(int id)
+    {
+        for (int i = 0; i < numCustomers; i++)
+        {
+            if (customers[i].getCustomerID() == id)
+            {
+                customers[i] = customers[numCustomers - 1];
+                numCustomers--;
+                return true;
+            }
+        }
+        return false;
+    }
+    public string viewAllCustomers()
+    {
+        string s = "List of Customers";
+        for (int i = 0; i < numCustomers; i++)
+        {
+            s = s + "\n" + customers[i];
+        }
+        return s;
     }
 }
