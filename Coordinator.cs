@@ -14,7 +14,7 @@ namespace AirLine
       public Coordinator()
       {
         bookingManager = new BookingManager(); //initializing the booking manager
-        customerManager = new CustomerManager(); //initializing the customer manager
+        customerManager = new CustomerManager(1000, 0); //initializing the customer manager
         flightManager = new FlightManager(); //initializing the flight manager
       }
 
@@ -68,18 +68,20 @@ namespace AirLine
         }
       }
 
-      private void AddBooking()
-      {
-        Console.WriteLine("Enter Customer ID: ");
-        int customerId = Convert.ToInt32(Console.ReadLine());
+        private void AddBooking()
+        {
+            Console.WriteLine("Enter Customer ID: ");
+            int customerId = Convert.ToInt32(Console.ReadLine());
 
-        Console.WriteLine("Enter Flight ID: ");
-        int flightId = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Enter Flight ID: ");
+            int flightId = Convert.ToInt32(Console.ReadLine());
 
-        Customer customer = new CustomerManager().GetCustomerById(customerId);
-        Flight flight = new FlightManager().GetFlightById(flightId);
+            Customer customer = new CustomerManager(1000, 0).searchCustByID(customerId);
+            Flight flight = flightManager.getFlight(flightId);
 
-        if(customer == null)
+
+            
+            if (customer == null)
         {
           Console.WriteLine("Customer ID not found :(");
           return;
@@ -90,7 +92,7 @@ namespace AirLine
           return;
         }
 
-        if(flight.AvailableSeats() <= 0)
+        if(flight.getPassengers() <= flight.getMaxSeats())
         {
           Console.WriteLine("No available seats :(");
           return;

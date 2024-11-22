@@ -46,38 +46,14 @@ namespace AirLine
         public void SaveBooking()
         {
             using StreamWriter file = new StreamWriter(BookingFile, true);
-            file.WriteLine($"{GetBookingId()}, {GetDate()}, {customer.GetCustomerId()}, {customer.GetFirstName()} {customer.GetLastName()} {customer.GetEmail()}, {GetFlight().GetFlightID()},{GetFlight().GetFlightNumber()}");
-        }
-
-        // View all bookings from the file
-        public static void ViewBookings()
-        {
-            if (File.Exists(BookingFile))
-            {
-                string[] bookings = File.ReadAllLines(BookingFile);
-                if (bookings.Length == 0)
-                {
-                    Console.WriteLine("No Bookings :(");
-                    return;
-                }
-
-                Console.WriteLine("Bookings:");
-                foreach (string booking in bookings)
-                {
-                    string[] parts = booking.Split(",");
-                    Console.WriteLine($"Booking ID: {parts[0]}, Date: {parts[1]}, Customer ID: {parts[2]}, Customer Name: {parts[3]}, Flight ID: {parts[4]}, Flight Number: {parts[5]}");
-                }
-            }
-            else
-            {
-                Console.WriteLine("No Bookings file found :(");
-            }
+            file.WriteLine($"{GetBookingId()}, {GetDate()}, {customer.GetCustomerId()}, {customer.GetFirstName()} {customer.GetLastName()} {customer.GetEmail()}, {GetFlight().getFlightNum()},{GetFlight().getFlightNum()}");
+            
         }
 
         // ToString method for displaying booking info
         public override string ToString()
         {
-            return $"{GetBookingId()}, {GetDate()}, {customer.GetFirstName()} {customer.GetLastName()}, {GetFlight().GetFlightID()},{GetFlight().GetFlightNumber()}";
+            return $"{GetBookingId()}, {GetDate()}, {customer.GetFirstName()} {customer.GetLastName()}, {GetFlight().getFlightNum()},{GetFlight().getFlightNum()}";
         }
     }
 }
