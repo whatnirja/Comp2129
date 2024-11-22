@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualBasic.FileIO;
+using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,22 +6,23 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Flights
+namespace AirLine
 {
-    internal class flightManager
+    internal class FlightManager
     {
         private static int numFlights;
         private static int maxFlights;
         private static Flight[] Flights = new Flight[maxFlights];
 
-        public flightManager(int max)
+        public FlightManager(int max)
         {
             maxFlights = max;
             numFlights = 0;
             Flights = new Flight[max];
         }
 
-       
+        public FlightManager() { } //N
+
         public static int getValidInt()
         {
             int validInput;
@@ -81,7 +82,7 @@ namespace Flights
 
         }
 
-        public void ViewParticularFlight()
+        public void ViewParticularFlight(int flightId)
         {
             Console.WriteLine("Enter Flight Number:");
             int partFlightNumber = getValidInt(); 
@@ -104,7 +105,26 @@ namespace Flights
             }
         }
 
+        public Flight getFlight(int flightId)
+        {
+            bool flightFound = false;
+            Flight flight1 = null;
+            foreach (var flight in Flights)
+            {
+                if (flight != null && flight.getFlightNum() == flightId)
+                {
+                    flight1 = flight;
+                    flightFound = true;
+                    break;
+                }
+            }
 
+            if (!flightFound)
+            {
+                Console.WriteLine("Flight not found. Please check the flight number.");
+            }
+            return flight1;
+        }
         public void DeleteFlight()
         {
             Console.WriteLine("Enter the flight number to delete:");
@@ -150,4 +170,3 @@ namespace Flights
 
     }
 }
-
