@@ -39,7 +39,7 @@ namespace AirLine
         Booking booking = new Booking(bookingId, date, customer, flight);
         booking.SaveBooking();
 
-        flight.AddPassenger();
+        flight.addPassenger(customer.GetCustomerId(), customer.GetFirstName(), customer.GetLastName(), customer.GetEmail());
         customer.IncrementBookings();
 
         Console.WriteLine("Booking successful!");
@@ -49,7 +49,26 @@ namespace AirLine
 
       public void ViewBookings()
       {
-        Booking.ViewBookings();
+        if (File.Exists(BookingFile))
+          {
+              string[] bookings = File.ReadAllLines(BookingFile);
+              if (bookings.Length == 0)
+              {
+                  Console.WriteLine("No Bookings :(");
+                  return;
+              }
+
+              Console.WriteLine("Bookings:");
+              foreach (string booking in bookings)
+              {
+                  string[] parts = booking.Split(",");
+                  Console.WriteLine($"Booking ID: {parts[0]}, Date: {parts[1]}, Customer ID: {parts[2]}, Flight ID: {parts[3]}");
+              }
+          }
+          else
+          {
+              Console.WriteLine("No Bookings file found :(");
+          }
       }
 
       public void DeleteBooking(int bookingId)

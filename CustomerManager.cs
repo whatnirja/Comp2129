@@ -1,3 +1,5 @@
+using AirLine;
+
 internal class CustomerManager
 {
     private Customer[] customers;
@@ -30,7 +32,7 @@ internal class CustomerManager
     {
         for (int i = 0; i < numCustomers; i++)
         {
-            if (customers[i].getCustomerID() == id)
+            if (customers[i].GetCustomerId() == id)
             {
                 return customers[i];
             }
@@ -41,7 +43,7 @@ internal class CustomerManager
     {
         for (int i = 0; i < numCustomers; i++)
         {
-            if (customers[i].getCustomerID() == id)
+            if (customers[i].GetCustomerId() == id)
             {
                 customers[i] = customers[numCustomers - 1];
                 numCustomers--;
