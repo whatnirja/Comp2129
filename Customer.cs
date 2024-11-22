@@ -1,34 +1,72 @@
-internal class Customer
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace AirLine
 {
-    private int customerId;
-    private string firstName;
-    private string lastName;
-    private string phone;
-    private int numBookings;
-
-    public Customer(int custId, string firstName, string lastName, string phone)
+    public class Customer
     {
-        this.customerId = custId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-        numBookings = 0;
+        private int customerId;
+        private string firstName;
+        private string lastName;
+        private string email;
+        private string customerFile = "customers.txt";
+        public Customer(int customerId, string firstName, string lastName , string email)
+        {
+            this.customerId = customerId;
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.email = email;
+        }
+
+        public Customer(){}
+        public int GetCustomerId()
+        {
+            return this.customerId;
+        }
+
+        public string GetFirstName()
+        {
+            return this.firstName;
+        } 
+
+        public string GetLastName()
+        {
+            return this.lastName;
+        }
+        public string GetEmail()
+        {
+            return this.email;
+        }
+
+        public string ViewCustomers()
+        {
+            if(File.Exists(customerFile))
+            {
+                string[] customers = File.ReadAllLines(customerFile);
+                if(customers.Length == 0)
+                {
+                    return "No customers :(";
+                }
+                return string.Join("\n", customers);
+            }
+            else
+            {
+                return "No customers file found :(";
+            }
+        }
+
+        public void IncrementBookings()
+        {
+            File.AppendAllText(customerFile, this.ToString() + "\n");
+        }
+
+        public override string ToString()
+        {
+            return $"{GetCustomerId()}, {GetFirstName()} {GetLastName()}, {GetEmail()}";
+        }
+
+       
     }
-
-    public int getCustomerID() { return customerId; }
-    public string getFirstName() { return firstName; }
-    public string getLastName() { return lastName; }
-    public string getPhone() { return phone; }
-    public int getNumBookings() { return numBookings; }
-
-    public void setCustomerID(int custID) { this.customerId = custID; }
-    public void setFirstName(string firstName) { this.firstName = firstName; }
-    public void setLastName(string lastName) { this.lastName = lastName; }
-    public void setPhone(string phone) { this.phone = phone; }
-    public override string ToString()
-    {
-        string s = customerId + "\t" + firstName + "\t" + lastName + "\t" + phone;
-        return s;
-    }
-
 }
