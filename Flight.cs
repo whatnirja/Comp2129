@@ -1,12 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Flights
+namespace AirLine
 {
-    internal class Flight
+    public class Flight
     {
         protected int flightNum;
         protected string origin;
@@ -27,10 +27,12 @@ namespace Flights
         public int getPassengers() { return passengers; }
         public int getFlightNum() { return flightNum; }
 
+        public int getMaxSeats() { return maxSeats; } // N
+
         //CHANGE WHILE MAKING BOOKINGS
-        public void addPassenger(int ID, string name) {
+        public void addPassenger(int customerId, string firstName, string lastName, string email) {
             Array.Resize(ref customers, customers.Length + 1);
-            customers[customers.Length - 1] = new Customer(ID, name);
+            customers[customers.Length - 1] = new Customer(customerId, firstName, lastName,  email);
             passengers++; 
         }
         //CHANGE WHILE MAKING BOOKINGS
@@ -39,7 +41,7 @@ namespace Flights
             int indexToRemove = -1;
             for (int i = 0; i < customers.Length; i++)
             {
-                if (customers[i].ID == customerID) 
+                if (customers[i].GetCustomerId() == customerID) 
                 {
                     indexToRemove = i;
                     break;
@@ -77,7 +79,7 @@ namespace Flights
             {
                 foreach (var customer in customers)
                 {
-                    s += $"- {customer.name} (ID: {customer.ID})\n";
+                    s += $"- {customer.GetFirstName() +" " + customer.GetLastName()} (ID: {customer.GetCustomerId()})\n";
                 }
             }
             else
