@@ -1,0 +1,8 @@
+400,Toronto,Germany,1200,0
+401,Delhi,Toronto,1000,0
+402,Russia,Italy,800,0
+406,Brazil,France,1300,0
+404,Yemen,Croatia,650,0
+405,Paris,Africa,740,0
+407,Sydney,Korea,840,0
+408,DC,Japan,1500,0
