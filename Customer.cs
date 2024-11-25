@@ -2,71 +2,50 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace AirLine
+namespace c2129groupProject
 {
-    public class Customer
+    internal class Customer
     {
-        private int customerId;
+        
+        private int customerID;
         private string firstName;
         private string lastName;
-        private string email;
-        private string customerFile = "customers.txt";
-        public Customer(int customerId, string firstName, string lastName , string email)
+        private string phone;
+        private int numBookings;
+
+        //Constructor
+        public Customer(int custID, string firstName, string lastName, string phone)
         {
-            this.customerId = customerId;
+            this.customerID = custID;
             this.firstName = firstName;
             this.lastName = lastName;
-            this.email = email;
+            this.phone = phone;
+            numBookings = 0;                                                       //initial number of bookings
         }
 
-        public Customer(){}
-        public int GetCustomerId()
-        {
-            return this.customerId;
-        }
+        //Getters
+        public int GetCustomerID() { return customerID; }
+        public string GetFirstName() { return firstName; }
+        public string GetLastName() { return lastName; }
+        public string GetPhone() { return phone; }
+        public int GetNumBookings() { return numBookings; }
 
-        public string GetFirstName()
-        {
-            return this.firstName;
-        } 
+        //Setters
+        public void SetCustomerID(int custID) { this.customerID = custID; }
+        public void SetFirstName(string firstName) { this.firstName = firstName; }
+        public void SetLastName(string lastName) { this.lastName = lastName; }
+        public void SetPhone(string phone) { this.phone = phone; }
+        public void SetNumBookings(int numBook) {  this.numBookings = numBook; }
 
-        public string GetLastName()
-        {
-            return this.lastName;
-        }
-        public string GetEmail()
-        {
-            return this.email;
-        }
-
-        public string ViewCustomers()
-        {
-            if(File.Exists(customerFile))
-            {
-                string[] customers = File.ReadAllLines(customerFile);
-                if(customers.Length == 0)
-                {
-                    return "No customers :(";
-                }
-                return string.Join("\n", customers);
-            }
-            else
-            {
-                return "No customers file found :(";
-            }
-        }
-
-        public void IncrementBookings()
-        {
-            File.AppendAllText(customerFile, this.ToString() + "\n");
-        }
 
         public override string ToString()
         {
-            return $"{GetCustomerId()}, {GetFirstName()} {GetLastName()}, {GetEmail()}";
+            string s = "--Customer Details--"; 
+            s += "\nID: "+customerID + "\nFirst Name: " + firstName + "\nLast Name: " + lastName + "\nPhone: " + phone +"\nNo. of Bookings: " +numBookings;
+            return s;
         }
 
-       
     }
 }
