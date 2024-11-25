@@ -2,29 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace AirLine
+namespace c2129groupProject
 {
-    public class Booking
+    internal class Booking
     {
         public int bookingId;
-        public string date; 
+        public string date;
         public Customer customer; // Single customer for the booking
         public Flight flight;
 
-        private const string BookingFile = "bookings.txt";
-
-        // Constructor for single customer booking
+        private string bookingFile = @"..\..\..\Files\bookings.txt";
         public Booking(int bookingId, string date, Customer customer, Flight flight)
         {
             this.bookingId = bookingId;
-            this.date = DateTime.Now.ToString(@"MM/dd/yyyy hh:mm:ss tt");
-            this.customer = customer;
-            this.flight = flight;
-        }
-
-        public Booking(string date, Customer customer, Flight flight)
-        {
             this.date = DateTime.Now.ToString(@"MM/dd/yyyy hh:mm:ss tt");
             this.customer = customer;
             this.flight = flight;
@@ -43,17 +35,19 @@ namespace AirLine
         public void SetFlight(Flight flight) => this.flight = flight;
 
         // Save booking to file
+        /*
         public void SaveBooking()
         {
-            using StreamWriter file = new StreamWriter(BookingFile, true);
-            file.WriteLine($"{GetBookingId()}, {GetDate()}, {customer.GetCustomerId()}, {customer.GetFirstName()} {customer.GetLastName()} {customer.GetEmail()}, {GetFlight().getFlightNum()},{GetFlight().getFlightNum()}");
-            
-        }
+            using StreamWriter file = new StreamWriter(bookingFile, true);
+            file.WriteLine($"{GetBookingId()}, {GetDate()}, {Customer.GetCustomerID()}, {customer.GetFirstName()} {customer.GetLastName()} , {flight.light().getFlightNum()}");
+
+        }*/
 
         // ToString method for displaying booking info
         public override string ToString()
         {
-            return $"{GetBookingId()}, {GetDate()}, {customer.GetFirstName()} {customer.GetLastName()}, {GetFlight().getFlightNum()},{GetFlight().getFlightNum()}";
+            return $"{GetBookingId()}, {GetDate()}, {customer.GetFirstName()} {customer.GetLastName()}, {GetFlight().flightNum},{GetFlight().flightNum}";
         }
+
     }
 }
