@@ -1,172 +1,264 @@
-using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
-namespace AirLine
+namespace c2129groupProject
 {
     internal class FlightManager
     {
-        private static int numFlights;
-        private static int maxFlights;
-        private static Flight[] Flights = new Flight[maxFlights];
+        private Flight[] flights;
+        private int numFlights;
+        private int max;
+        private static int seed;
 
-        public FlightManager(int max)
+        private string flightFile = @"..\..\..\Files\flights.txt";
+
+        public FlightManager(int max, int startseed)
         {
-            maxFlights = max;
+            this.max = max;
             numFlights = 0;
-            Flights = new Flight[max];
+            flights = new Flight[max];
+            seed = startseed;
+            LoadFlights();
         }
-
-        public FlightManager() { } //N
-
-        public static int getValidInt()
+        // Load flights from the file
+        private void LoadFlights()
         {
-            int validInput;
-            while (!int.TryParse(Console.ReadLine(), out validInput))
+            if (!File.Exists(flightFile))
             {
-                Console.WriteLine("Please enter a valid integer");
+                Console.WriteLine("Flight file does not exist.");
+                return;
             }
-            return validInput;
-        }
-        public void AddFlight()
-        {
-            if (numFlights < maxFlights)
+
+            try
             {
-            
-                Console.WriteLine("Enter Flight Number:");
-                int flightNumber = getValidInt();
-                Console.WriteLine("Enter Origin:");
-                string origin = Console.ReadLine();
-                Console.WriteLine("Enter Destination:");
-                string destination = Console.ReadLine();
-                Console.WriteLine("Enter Max Seats:");
-                int maxSeats = getValidInt();
-
-
-                foreach (var flight in Flights)
+                flights = new Flight[max];
+                numFlights = 0;
+                string[] flightRecords = File.ReadAllLines(flightFile);
+                foreach (string record in flightRecords)
                 {
-                    if (flight != null && flight.getFlightNum() == flightNumber)
+                    string[] data = record.Split(',');
+                    Flight flight = new Flight(int.Parse(data[0]), data[1], data[2], int.Parse(data[3]))
                     {
-                        Console.WriteLine("Flight number already exists. Please choose a different flight number.");
-                        return;
-                    }
+                        passengers = int.Parse(data[4])
+                    };
+                    flights[numFlights++] = flight;
                 }
-                
-
-                Flights[numFlights] = new Flight(flightNumber, origin, destination, maxSeats);
-                numFlights++;
-                Console.WriteLine("Flight added successfully.");
-                
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine("Maximum flight limit reached.");
+                Console.WriteLine($"Error loading flights: {ex.Message}");
             }
+        }
+
+        private int GenerateFlightId()
+        {
+            return numFlights > 0 ? seed+numFlights+1 : seed;
+        }
+
+
+        public bool AddFlight(string origin, string destination, int maxSeats)
+        {
+            if (numFlights >= max)
+            {
+                Console.WriteLine("Cannot add more flights. Maximum capacity reached.");
+                return false;
+            }
+
+            int flightNum = GenerateFlightId();
+            Flight newFlight = new Flight(flightNum, origin, destination, maxSeats);
+            flights[numFlights++] = newFlight;
+            try
+            {
+                string[] flightRecords = new string[numFlights];
+                for (int i = 0; i < numFlights; i++)
+                {
+                    flightRecords[i] = $"{flights[i].flightNum},{flights[i].origin},{flights[i].destination},{flights[i].maxSeats},{flights[i].passengers}";
+                }
+                File.WriteAllLines(flightFile, flightRecords);
+                
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving flights: {ex.Message}");
+                return false;
+            }
+
+            
         }
 
         public void ViewFlights()
         {
-            Console.WriteLine("\nList of All Flights:");
-            foreach (var flight in Flights)
+            if(numFlights ==0)
             {
-                if (flight != null)
-                {
-                    Console.WriteLine(flight.getSummary());
-                }
+                Console.WriteLine("No flights added yet.");
+                return;
             }
-            Console.ReadKey();
+            
+            Console.WriteLine("---- Flight List ----");
+            Console.WriteLine("FlightNum\tOrigin\t\tDestination\tMaxSeats\tPassengers");
+            Console.WriteLine("--------------------------------------------------------------------------");
 
-        }
-
-        public void ViewParticularFlight(int flightId)
-        {
-            Console.WriteLine("Enter Flight Number:");
-            int partFlightNumber = getValidInt(); 
-
-            bool flightFound = false;
-            foreach (var flight in Flights)
-            {
-                if (flight != null && flight.getFlightNum() == partFlightNumber)
-                {
-                    Console.WriteLine("\nFlight Details:");
-                    Console.WriteLine(flight.getDetails());
-                    flightFound = true; 
-                    break;
-                }
-            }
-
-            if (!flightFound) 
-            {
-                Console.WriteLine("Flight not found. Please check the flight number.");
-            }
-        }
-
-        public Flight getFlight(int flightId)
-        {
-            bool flightFound = false;
-            Flight flight1 = null;
-            foreach (var flight in Flights)
-            {
-                if (flight != null && flight.getFlightNum() == flightId)
-                {
-                    flight1 = flight;
-                    flightFound = true;
-                    break;
-                }
-            }
-
-            if (!flightFound)
-            {
-                Console.WriteLine("Flight not found. Please check the flight number.");
-            }
-            return flight1;
-        }
-        public void DeleteFlight()
-        {
-            Console.WriteLine("Enter the flight number to delete:");
-            int flightNum = getValidInt();
-
-            // Find the flight to delete
-            Flight delFlight = null;
             for (int i = 0; i < numFlights; i++)
             {
-                if (Flights[i] != null && Flights[i].getFlightNum() == flightNum)
+                var flight = flights[i];
+                Console.WriteLine($"{flight.flightNum}\t\t{flight.origin}\t\t{flight.destination}\t\t{flight.maxSeats}\t\t{flight.passengers}");
+            }
+        }
+
+        public void ViewParticularFlight(int flightNum)
+        {
+            int index = -1;
+            for (int i = 0; i < numFlights; i++)
+            {
+                if (flights[i].flightNum == flightNum)
                 {
-                    delFlight = Flights[i];
-                    Flights[i] = null; // Mark the slot as empty
+                    index = i;
+                    Console.WriteLine(flights[i].ToString() );
+                    break;
+                }
+
+            }
+            if (index == -1)
+            {
+                Console.Clear();
+                Console.WriteLine($"No Flight with number {flightNum} found");
+                
+            }
+        }
+
+        public bool DeleteFlight(int flightNum)
+        {
+            int index = -1;
+            for (int i = 0;i < numFlights;i++) { 
+                if (flights[i].flightNum == flightNum)
+                {
+                    index= i; 
                     break;
                 }
             }
-
-            if (delFlight == null)
+            if (index == -1)
             {
-                Console.WriteLine("Flight not found.");
-                return;
+                Console.Clear();
+                Console.WriteLine($"No Flight with number {flightNum} found");
+                return false;
             }
 
-            if (delFlight.getPassengers() > 0)
+            flights[index] = flights[numFlights-1];
+            numFlights--;
+            try
             {
-                Console.WriteLine("Cannot delete the flight because there are customers booked on it.");
-                return;
-            }
-
-            // Compact the array by shifting flights after the removed one
-            for (int i = 0; i < numFlights - 1; i++)
-            {
-                if (Flights[i] == null)
+                string[] flightRecords = new string[numFlights];
+                for (int i = 0; i < numFlights; i++)
                 {
-                    Flights[i] = Flights[i + 1];
-                    Flights[i + 1] = null;
+                    flightRecords[i] = $"{flights[i].flightNum},{flights[i].origin},{flights[i].destination},{flights[i].maxSeats},{flights[i].passengers}";
+                }
+                File.WriteAllLines(flightFile, flightRecords);
+                return true;
+
+                
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving flights: {ex.Message}");
+                return false;
+                
+            }
+
+        }
+
+
+
+
+        /*
+        //Reads the Flight File and returns an array
+        public string[] ReadFlightFile()
+        {
+            try
+            {
+                if (File.Exists(flightFile))
+                {
+                    string[] flightRecords = File.ReadAllLines(flightFile);
+                    foreach (string record in flightRecords)
+
+                    {
+                        string[] data = record.Split(',');
+                        Flight flight = new Flight(int.Parse(data[0]), data[1], data[2], int.Parse(data[3]))
+                        {
+                            passengers= int.Parse(data[4])
+                        };
+                        flights[numFlights++] = flight;
+                    }
+                    return flightRecords;
+                }
+                else
+                {
+                    Console.WriteLine("Flight file does not exist.");
+                    return new string[0];                             //Return an empty array 
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error reading file: {ex.Message}");
+                return new string[0];                                 //Return an empty array
+            }
 
-            numFlights--; // Decrement the flight count
-            Console.WriteLine("Flight deleted successfully.");
         }
+        
+        
+
+        //Generates Flight id on the basis of last flight added
+        private int GenerateFlightId()
+        {
+            //if flight file does not exist
+            if (!File.Exists(flightFile))
+            {
+                return seed;
+            }
+
+            //if there are no flights yet
+            string[] flights = ReadFlightFile();
+            if (flights.Length == 0)
+            {
+                return seed;
+            }
+
+            //if there are already flights
+            string lastFlight = flights[flights.Length - 1];
+            int lastFlightId = Convert.ToInt32(lastFlight.Split(",")[0]);
+            return lastFlightId + 1;
+        }*/
+        /*
+        //Adding new Flights
+        public bool AddFlight( string org, string dest, int maxSeat)
+        {
+            string[] flightRecords = ReadFlightFile();
+
+
+           
+            if (numFlights < max)
+            {
+                Flight newCust = new Flight(GenerateFlightId(), org, dest, maxSeat,);
+                customers[numCustomers++] = newCust;
+
+                using (StreamWriter writer = new StreamWriter(customerFile, true))
+                {
+                    writer.WriteLine($"{newCust.GetCustomerID()},{newCust.GetFirstName()},{newCust.GetLastName()},{newCust.GetPhone()},{newCust.GetNumBookings()}");
+                }         //Appends file with attributes separated by comma
+                return true;
+            }
+            else
+            {
+                Console.WriteLine("Not suffiecient space.");
+                return false;
+            }
+
+        }*/
+
+
 
     }
 }
