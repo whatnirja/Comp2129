@@ -11,11 +11,13 @@ namespace c2129groupProject
     {
         private CustomerManager customerMan;
         private FlightManager flightMan;
+        private BookingManager bookMan;
 
         public Coordinator()
         {
             customerMan = new CustomerManager(1000, 1);
             flightMan=new FlightManager(1000, 400);
+            bookMan = new BookingManager(1000, 700,customerMan,flightMan);
         }
 
         //1. Customer
@@ -304,6 +306,95 @@ namespace c2129groupProject
                     Console.Clear();
                     Console.WriteLine("Invalid Id. Please try again. ");
                 }
+            }
+        }
+
+        //3. Booking
+        public void BookingMenu()
+        {
+            bool exit = false;
+            while (!exit)
+            {
+                //Booking menu
+                Console.WriteLine("\n---ABC Airlines Ltd.---");
+                Console.WriteLine("Booking Menu");
+                Console.WriteLine();
+                Console.WriteLine("1. View Bookings");
+                Console.WriteLine("2. Make a Booking");
+                Console.WriteLine("3. Delete a Booking");
+                Console.WriteLine("4. Exit");
+                Console.Write("Enter your choice(1-4): ");
+
+                try
+                {
+                    string? choice = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(choice) || !int.TryParse(choice, out int parsedChoice))
+                    {
+                        //Loops till valid integer found
+                        Console.Clear();
+                        Console.WriteLine("Invalid choice, please enter integer (1-4).");
+                        continue;
+                    }
+
+                    switch (parsedChoice)
+                    {
+                        case 1:
+                            Console.Clear();
+                            //AddBooking();
+                            break;
+                        case 2:
+                            Console.Clear();
+                            //ViewBookings();
+                            break;
+                        case 3:
+                            Console.Clear();
+                            //DeleteBooking();
+                            break;
+                        case 4:
+                            exit = true;
+                            break;
+                        default:
+                            Console.Clear();
+                            Console.WriteLine("Invalid choice, please enter integer (1-4).");
+                            break;
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred: {ex.Message}");
+                }
+
+            }
+        }
+
+        //1. add New Booking
+        public void AddBooking()
+        {
+            bool repeat;
+            repeat = true;
+            while (repeat)
+            { //Repeats until valid input found
+                Console.Clear();
+                Console.WriteLine("--Add new Booking--");
+                Console.WriteLine("Enter Date: ");
+                string date = Console.ReadLine();
+                Console.WriteLine("Enter Customer ID: ");
+                string custId = Console.ReadLine();
+                Console.WriteLine("Enter Flight ID: ");
+                string flightId = Console.ReadLine();
+                if (!string.IsNullOrWhiteSpace(date) && !string.IsNullOrWhiteSpace(custId) && !string.IsNullOrWhiteSpace(flightId))
+                {
+                    if (bookMan.AddBooking(date, int.Parse(custId), int.Parse(flightId)))
+                    {
+                        Console.Clear();
+                        Console.WriteLine($"Flight added successfully.");
+
+                    }
+
+                    repeat = false;
+                }
+                else { Console.WriteLine("Invalid input. All fields must be non-empty."); }
             }
         }
 
