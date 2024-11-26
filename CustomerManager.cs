@@ -224,7 +224,17 @@ namespace c2129groupProject
             return true;
         }
 
-
+        public Customer SearchCustById(int custId)
+        {
+            foreach (Customer customer in customers)
+            {
+                if (customer != null && customer.GetCustomerID() == custId)
+                {
+                    return customer;
+                }
+            }
+            return null;
+        }
 
     }
 }
