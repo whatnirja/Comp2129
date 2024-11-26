@@ -170,6 +170,20 @@ namespace c2129groupProject
 
         }
 
+        //Find Flight by ID
+        public Flight SearchFlightByNum(int flightNum)
+        {
+            foreach (Flight flight in flights)
+            {
+                if (flight!=null && flight.flightNum==flightNum)
+                {
+                    return flight;
+                }
+            }
+            return null;
+        }
+
+
 
 
 
